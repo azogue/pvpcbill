@@ -78,11 +78,13 @@ class FacturaBilledPeriod(Base):
         energy_periods = [
             EnergykWhTariffPeriod(
                 name=f"P{i+1}",
-                coste_peaje_acceso_tea=cons_period.sum() * coef_peaje_acc_tea,
-                coste_energia_tcu=(cons_period * pvpc_tcu.loc[cons_period.index]).sum(),
-                energia_total=cons_period.sum(),
+                coste_peaje_acceso_tea=round_money(cons_period.sum() * coef_tea),
+                coste_energia_tcu=round_money(
+                    (cons_period * pvpc_tcu.loc[cons_period.index]).sum()
+                ),
+                energia_total=round_money(cons_period.sum()),
             )
-            for i, (coef_peaje_acc_tea, cons_period) in enumerate(
+            for i, (coef_tea, cons_period) in enumerate(
                 zip(
                     TERM_ENER_PEAJE_ACC_EUR_KWH_TEA[year][tipo_peaje.value],
                     split_in_tariff_periods(consumo, tipo_peaje),
@@ -174,8 +176,10 @@ class FacturaData(Base):
         self.termino_equipo_medida = round_money(frac_year * self.config.alquiler_anual)
 
         # Cálculo del IVA y TOTAL:
-        self.termino_iva_gen = subt_fijo_var * self.config.zona_impuestos.tax_rate
-        self.termino_iva_medida = (
+        self.termino_iva_gen = round_money(
+            subt_fijo_var * self.config.zona_impuestos.tax_rate
+        )
+        self.termino_iva_medida = round_money(
             self.termino_equipo_medida * self.config.zona_impuestos.measurement_tax_rate
         )
         self.termino_iva_total = round_money(

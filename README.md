@@ -7,7 +7,7 @@
 
 **Electrical billing simulation for small consumers in Spain using PVPC** (electricity hourly prices).
 
-It uses **[`aiopvpc`](https://github.com/azogue/aiopvpc)** to download PVPC data, and _the usual suspects_ ([`pandas`](https://pandas.pydata.org) & [`matplotlib`](https://matplotlib.org) to deal with time-series data and plotting.
+It uses **[`aiopvpc`](https://github.com/azogue/aiopvpc)** to download PVPC data, and _the usual suspects_ ([`pandas`](https://pandas.pydata.org) & [`matplotlib`](https://matplotlib.org)) to deal with time-series data and plotting.
 
 <span class="badge-buymeacoffee"><a href="https://www.buymeacoffee.com/azogue" title="Donate to this project using Buy Me A Coffee"><img src="https://img.shields.io/badge/buy%20me%20a%20coffee-donate-yellow.svg" alt="Buy Me A Coffee donate button" /></a></span>
 

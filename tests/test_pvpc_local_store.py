@@ -1,13 +1,12 @@
 """Tests for pvpcbill."""
 import pandas as pd
+import pytest
 
 from pvpcbill import create_bill, get_pvpc_data, load_csv_consumo_cups
 from .conftest import load_json_fixture, TEST_PVPC_STORE, TEST_SAMPLE_1
 
-# import pytest
 
-
-# @pytest.mark.skip(reason="Real esios API calls here!, disable to test locally")
+@pytest.mark.skip(reason="Real esios API calls here!, disable to test locally")
 async def test_bill_with_local_pvpc_store():
     """Test the local PVPC CSV storage (MAKES REAL API CALLS)."""
     s_consumo: pd.Series = load_csv_consumo_cups(TEST_SAMPLE_1)
@@ -23,7 +22,7 @@ async def test_bill_with_local_pvpc_store():
     assert df_pvpc_2.index.equals(s_consumo_other.index)
 
 
-# @pytest.mark.skip(reason="Real esios API calls here!, disable to test locally")
+@pytest.mark.skip(reason="Real esios API calls here!, disable to test locally")
 async def test_bill_without_local_pvpc_store():
     """Generate a bill with just the consumption data (MAKES REAL API CALLS)."""
     bill = await create_bill(
