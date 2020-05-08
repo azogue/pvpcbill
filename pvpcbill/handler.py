@@ -55,9 +55,9 @@ class FacturaElec:
     def _evaluate_bill(self, config: FacturaConfig) -> FacturaData:
         """Método para re-generar el cálculo de la factura eléctrica."""
         # Datos de entrada e intervalo
-        t0 = self.consumo_horario.index[0].tz_localize(None) - pd.Timedelta("1D")
-        tf = self.consumo_horario.index[-1].tz_localize(None).replace(hour=0)
-        n_days = (tf - t0).days
+        t0 = self.consumo_horario.index[0]  # .tz_localize(None) - pd.Timedelta("1D")
+        tf = self.consumo_horario.index[-1]
+        n_days = (tf - t0.replace(hour=0)).days + 1
 
         # Extrae TCU para tarifa seleccionada de PVPC data
         code = config.tipo_peaje.value

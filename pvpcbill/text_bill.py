@@ -51,7 +51,7 @@ MASK_T_VAR_PERIOD_TRAMO = (
     " *Tramo {tramo}, " "de {ts_ini:%d/%m/%Y} a {ts_fin:%d/%m/%Y}:"
 )
 MASK_T_IMP_ELEC = """    {0}% x ({1:.2f}€ + {2:.2f}€ = {3:.2f}€)"""
-MASK_T_MEDIDA = """    {0} días x {1:.6f} /día"""
+MASK_T_MEDIDA = """    {0} días x {1:.6f} €/día"""
 MASK_T_IVA_M = """    {0:.0f}% de {1:.2f}€ + {2:.0f}% de {3:.2f}€"""
 MASK_T_IVA_U = """    {0:.0f}% de {1:.2f}€"""
 MASK_T_VAR_PERIOD = "  Periodo {ind_periodo}: {valor_medio_periodo:.6f} €/kWh"

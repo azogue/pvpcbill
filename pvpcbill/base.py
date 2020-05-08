@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """Electrical billing for small consumers in Spain using PVPC. Base dataclass."""
 import json
-from datetime import date, datetime
+from datetime import datetime
 from enum import Enum
 
 import attr
@@ -12,11 +12,8 @@ cattr.register_unstructure_hook(Enum, lambda e: e.value)
 cattr.register_structure_hook(Enum, lambda s, enum_cls: enum_cls(s))
 
 time_format = "%Y-%m-%d %H:%M:%S"
-date_format = "%Y-%m-%d"
 cattr.register_unstructure_hook(datetime, lambda dt: dt.strftime(time_format))
 cattr.register_structure_hook(datetime, lambda s, _: datetime.strptime(s, time_format))
-cattr.register_unstructure_hook(date, lambda dt: dt.strftime(date_format))
-cattr.register_structure_hook(date, lambda s, _: datetime.strptime(s, date_format))
 
 
 @attr.s

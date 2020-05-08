@@ -37,7 +37,7 @@ import pytz
 from aiopvpc import ESIOS_TARIFFS
 
 # Defaults y definiciones
-DEFAULT_CUPS = "ES00XXXXXXXXXXXXXXDB"
+DEFAULT_CUPS = "ES00XXXXXXXXXXXXXXSN"
 DEFAULT_POTENCIA_CONTRATADA_KW = 3.45
 DEFAULT_BONO_SOCIAL = False
 
@@ -176,17 +176,9 @@ TERM_ENER_PEAJE_ACC_EUR_KWH_TEA = {
 ##############################################
 #       Cálculo                              #
 ##############################################
-# TODO redo round_money, when is tuple??
-def round_money(value):
-    if type(value) is tuple:
-        return tuple(
-            float(Decimal(str(v)).quantize(Decimal("1.11"), rounding=ROUND_HALF_UP))
-            for v in value
-        )
-    else:
-        return float(
-            Decimal(str(value)).quantize(Decimal("1.11"), rounding=ROUND_HALF_UP)
-        )
+def round_money(value: float):
+    """Rounding method used in official billing (as it appears)."""
+    return float(Decimal(str(value)).quantize(Decimal("1.11"), rounding=ROUND_HALF_UP))
 
 
 # TODO review sum_money
@@ -198,6 +190,7 @@ def split_in_tariff_periods(
     series: pd.Series, tipo_peaje: TipoPeaje
 ) -> Tuple[pd.Series, ...]:
     if tipo_peaje == TipoPeaje.GEN:
+        assert tipo_peaje.num_periods == 1
         return (series,)
 
     # split using constant hours in UTC :)
@@ -207,9 +200,11 @@ def split_in_tariff_periods(
     if tipo_peaje == TipoPeaje.NOC:
         idx_p1 = idx_utc.indexer_between_time("11:00", "21:00", **params_cierre)
         idx_p2 = idx_utc.indexer_between_time("21:00", "11:00", **params_cierre)
+        assert tipo_peaje.num_periods == 2
         return series[idx_p1], series[idx_p2]
 
     idx_p1 = idx_utc.indexer_between_time("11:00", "21:00", **params_cierre)
     idx_p2 = idx_utc.indexer_between_time("05:00", "11:00", **params_cierre)
     idx_p3 = idx_utc.indexer_between_time("21:00", "05:00", **params_cierre)
+    assert tipo_peaje.num_periods == 3
     return series[idx_p1], series[idx_p2], series[idx_p3]

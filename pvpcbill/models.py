@@ -222,3 +222,14 @@ class FacturaData(Base):
         return round_sum_money(
             billed_period.termino_fijo_total for billed_period in self.periodos_fact
         )
+
+    @property
+    def identifier(self) -> str:
+        """Text identifier to be used as filename for exported data."""
+        str_ident = f"elecbill_data_{self.start:%Y_%m_%d}_to_{self.end:%Y_%m_%d}_"
+        str_ident += f"{self.config.tipo_peaje.value}_"
+        str_ident += f"{self.config.potencia_contratada:g}_".replace(".", "_")
+        str_ident += f"{self.config.zona_impuestos.value}"
+        if self.config.con_bono_social:
+            str_ident += f"_discount"
+        return str_ident
