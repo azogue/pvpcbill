@@ -24,7 +24,7 @@ def _load_stored_csv(path: Union[Path, str]) -> Union[pd.DataFrame, pd.Series]:
 
     * Assume localized DateTimeIndex in col 0.
     """
-    data = pd.read_csv(path, index_col=0, parse_dates=[0])
+    data = pd.read_csv(path, index_col=0, parse_dates=[0]).round(12)
     data.index = data.index.tz_convert(REFERENCE_TZ)
     return data
 
@@ -106,12 +106,12 @@ async def get_pvpc_data(
         return df
 
     if df_store.empty:
-        df.to_csv(path_pvpc_csv)
+        df.round(12).to_csv(path_pvpc_csv)
         return df
 
     # TODO check drop duplicates!
     df_store = df_store.append(df).drop_duplicates().sort_index()
-    df_store.to_csv(path_pvpc_csv)
+    df_store.round(12).to_csv(path_pvpc_csv)
     return df
 
 

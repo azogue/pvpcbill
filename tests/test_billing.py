@@ -2,31 +2,28 @@
 import pytest
 
 from pvpcbill import create_bill, FacturaData, FacturaElec
-from .conftest import load_json_fixture, TEST_EXAMPLES_PATH
-
-_SAMPLE_STORE = "pvpc_test_data.csv"
-_SAMPLE_CONS_1 = "consumo_facturado18_02_2020-18_03_2020-R.csv"
+from .conftest import load_json_fixture, TEST_PVPC_STORE, TEST_SAMPLE_1
 
 
 @pytest.mark.parametrize(
-    "p_consumption_csv, p_pvpc_csv, with_results, power, tariff, tax_zone, discount",
+    "p_consumption_csv, with_results, power, tariff, tax_zone, discount",
     (
-        (_SAMPLE_CONS_1, _SAMPLE_STORE, True, 4.6, "NOC", "IVA", False),
-        (_SAMPLE_CONS_1, _SAMPLE_STORE, True, 4.6, "GEN", "IVA", False),
-        (_SAMPLE_CONS_1, _SAMPLE_STORE, False, 4.6, "VHC", "IVA", False),
-        (_SAMPLE_CONS_1, _SAMPLE_STORE, False, 3.45, "GEN", "IGIC", False),
-        (_SAMPLE_CONS_1, _SAMPLE_STORE, False, 3.45, "GEN", "IPSI", False),
-        (_SAMPLE_CONS_1, _SAMPLE_STORE, False, 4.6, "NOC", "IVA", True),
-        (_SAMPLE_CONS_1, _SAMPLE_STORE, False, 3.45, "NOC", "IGIC", True),
+        (TEST_SAMPLE_1, True, 4.6, "NOC", "IVA", False),
+        (TEST_SAMPLE_1, True, 4.6, "GEN", "IVA", False),
+        # TODO fix VHC tariff, it does not match, should be 62,82 €, not 62.63
+        (TEST_SAMPLE_1, False, 4.6, "VHC", "IVA", False),
+        (TEST_SAMPLE_1, False, 3.45, "GEN", "IGIC", False),
+        (TEST_SAMPLE_1, False, 3.45, "GEN", "IPSI", False),
+        (TEST_SAMPLE_1, False, 4.6, "NOC", "IVA", True),
+        (TEST_SAMPLE_1, False, 3.45, "NOC", "IGIC", True),
     ),
 )
 async def test_quick_bill_with_pvpc_store(
-    p_consumption_csv, p_pvpc_csv, with_results, power, tariff, tax_zone, discount
+    p_consumption_csv, with_results, power, tariff, tax_zone, discount
 ):
-    p_csv = TEST_EXAMPLES_PATH / p_consumption_csv
     bill = await create_bill(
-        path_csv_consumo=p_csv,
-        path_csv_pvpc_store=p_pvpc_csv,
+        path_csv_consumo=p_consumption_csv,
+        path_csv_pvpc_store=TEST_PVPC_STORE,
         potencia_contratada=power,
         tipo_peaje=tariff,
         zona_impuestos=tax_zone,
