@@ -30,8 +30,10 @@ Facturación de datos de consumo eléctrico para particulares según PVPC.
 """  # noqa
 from decimal import Decimal, ROUND_HALF_UP
 from enum import Enum
+from typing import Tuple
 
 import pandas as pd
+import pytz
 from aiopvpc import ESIOS_TARIFFS
 
 # Defaults y definiciones
@@ -192,49 +194,22 @@ def round_sum_money(values):
     return sum(round(value, ROUND_PREC) for value in values)
 
 
-# TODO redo completely:
-def asigna_periodos_discr_horaria(series: pd.Series, tipo_peaje: TipoPeaje):
-    if tipo_peaje.num_periods > 1:  # DISCRIMINACIÓN HORARIA
-        df = pd.DataFrame(series)
-        tt = df.index
-        p_cierre_periodos = {"include_start": True, "include_end": False}
-        idx_13_23h = tt[tt.indexer_between_time("13:00", "23:00", **p_cierre_periodos)]
-        if tipo_peaje.num_periods == 3:  # '2.0DHS': Tarifa vehículo eléctrico
-            df["P1"] = df["P2"] = df["P3"] = False
-            idx_23_01h = tt[
-                tt.indexer_between_time("23:00", "01:00", **p_cierre_periodos)
-            ]
-            idx_01_07h = tt[
-                tt.indexer_between_time("01:00", "07:00", **p_cierre_periodos)
-            ]
-            idx_07_13h = tt[
-                tt.indexer_between_time("07:00", "13:00", **p_cierre_periodos)
-            ]
-            df.loc[idx_13_23h, "P1"] = True
-            df.loc[idx_23_01h.union(idx_07_13h), "P2"] = True
-            df.loc[idx_01_07h, "P3"] = True
-            assert df[["P1", "P2", "P3"]].sum(axis=1).sum() == len(df)
-        else:  # '2.0DHA': Tarifa nocturna, con dos periodos
-            assert tipo_peaje.num_periods == 2
-            idx_verano = tt[[x.dst().total_seconds() > 0 for x in tt]]
-            idx_invierno = tt[[x.dst().total_seconds() == 0 for x in tt]]
-            df["P1"] = df["P2"] = False
-            idx_12_22h = tt[
-                tt.indexer_between_time("12:00", "22:00", **p_cierre_periodos)
-            ]
-            idx_22_12h = tt[
-                tt.indexer_between_time("22:00", "12:00", **p_cierre_periodos)
-            ]
-            idx_23_13h = tt[
-                tt.indexer_between_time("23:00", "13:00", **p_cierre_periodos)
-            ]
-            if len(idx_verano) > 0:
-                df.loc[idx_13_23h.intersection(idx_verano), "P1"] = True
-                df.loc[idx_23_13h.intersection(idx_verano), "P2"] = True
-            if len(idx_invierno) > 0:
-                df.loc[idx_12_22h.intersection(idx_invierno), "P1"] = True
-                df.loc[idx_22_12h.intersection(idx_invierno), "P2"] = True
-            assert df[["P1", "P2"]].sum(axis=1).sum() == len(df)
-        return True, df
-    else:
-        return False, series
+def split_in_tariff_periods(
+    series: pd.Series, tipo_peaje: TipoPeaje
+) -> Tuple[pd.Series, ...]:
+    if tipo_peaje == TipoPeaje.GEN:
+        return (series,)
+
+    # split using constant hours in UTC :)
+    idx_utc: pd.DatetimeIndex = series.index.tz_convert(pytz.UTC)
+    params_cierre = {"include_start": True, "include_end": False}
+
+    if tipo_peaje == TipoPeaje.NOC:
+        idx_p1 = idx_utc.indexer_between_time("11:00", "21:00", **params_cierre)
+        idx_p2 = idx_utc.indexer_between_time("21:00", "11:00", **params_cierre)
+        return series[idx_p1], series[idx_p2]
+
+    idx_p1 = idx_utc.indexer_between_time("11:00", "21:00", **params_cierre)
+    idx_p2 = idx_utc.indexer_between_time("05:00", "11:00", **params_cierre)
+    idx_p3 = idx_utc.indexer_between_time("21:00", "05:00", **params_cierre)
+    return series[idx_p1], series[idx_p2], series[idx_p3]
