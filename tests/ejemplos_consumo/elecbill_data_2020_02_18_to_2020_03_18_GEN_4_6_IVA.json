@@ -1,0 +1,38 @@
+{
+  "config": {
+    "tipo_peaje": "GEN",
+    "potencia_contratada": 4.6,
+    "con_bono_social": false,
+    "zona_impuestos": "IVA",
+    "alquiler_anual": 9.72,
+    "impuesto_electrico": 0.0511269632,
+    "cups": "ES0012345678901234SN"
+  },
+  "num_dias_factura": 30,
+  "start": "2020-02-18 00:00:00",
+  "end": "2020-03-18 23:00:00",
+  "periodos_fact": [
+    {
+      "billed_days": 30,
+      "year": 2020,
+      "termino_fijo_peaje_acceso": 14.34,
+      "termino_fijo_comercializacion": 1.17,
+      "termino_fijo_total": 15.51,
+      "energy_periods": [
+        {
+          "name": "P1",
+          "coste_peaje_acceso_tea": 20.821733137,
+          "coste_energia_tcu": 23.5059356,
+          "energia_total": 472.93100000000004
+        }
+      ]
+    }
+  ],
+  "descuento_bono_social": 0.0,
+  "termino_impuesto_electrico": 3.06,
+  "termino_equipo_medida": 0.8,
+  "termino_iva_gen": 13.209,
+  "termino_iva_medida": 0.168,
+  "termino_iva_total": 13.38,
+  "total": 77.08
+}

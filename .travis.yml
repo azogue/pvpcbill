@@ -1,0 +1,23 @@
+language: python
+python:
+- 3.7
+stages:
+- lint
+- test
+#- deploy
+jobs:
+  include:
+  - stage: lint
+    install:
+    - pip install pre-commit
+    - pre-commit install-hooks
+    script:
+    - pre-commit run --all-files
+  - stage: test
+    install:
+    - pip install poetry
+    - poetry install -v
+    - pip install codecov
+    script:
+    - poetry run pytest
+    - codecov
