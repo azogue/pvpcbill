@@ -21,15 +21,15 @@
       "energy_periods": [
         {
           "name": "P1",
-          "coste_peaje_acceso_tea": 10.544458468,
-          "coste_energia_tcu": 8.477372039999999,
-          "energia_total": 170.03900000000002
+          "coste_peaje_acceso_tea": 10.54,
+          "coste_energia_tcu": 8.48,
+          "energia_total": 170.04
         },
         {
           "name": "P2",
-          "coste_peaje_acceso_tea": 0.67090578,
-          "coste_energia_tcu": 13.146024950000003,
-          "energia_total": 302.892
+          "coste_peaje_acceso_tea": 0.67,
+          "coste_energia_tcu": 13.15,
+          "energia_total": 302.89
         }
       ]
     }
@@ -37,8 +37,8 @@
   "descuento_bono_social": 0.0,
   "termino_impuesto_electrico": 2.47,
   "termino_equipo_medida": 0.8,
-  "termino_iva_gen": 10.6722,
-  "termino_iva_medida": 0.168,
+  "termino_iva_gen": 10.67,
+  "termino_iva_medida": 0.17,
   "termino_iva_total": 10.84,
   "total": 62.46
 }
