@@ -1,3 +1,8 @@
+[![PyPi](https://pypip.in/v/pvpcbill/badge.svg)](https://pypi.org/project/pvpcbill/)
+[![Wheel](https://pypip.in/wheel/pvpcbill/badge.svg)](https://pypi.org/project/pvpcbill/)
+[![Travis Status](https://travis-ci.org/azogue/pvpcbill.svg?branch=master)](https://travis-ci.org/azogue/pvpcbill)
+[![codecov](https://codecov.io/gh/azogue/pvpcbill/branch/master/graph/badge.svg)](https://codecov.io/gh/azogue/pvpcbill)
+
 # pvpcbill
 
 **Electrical billing simulation for small consumers in Spain using PVPC** (electricity hourly prices).
